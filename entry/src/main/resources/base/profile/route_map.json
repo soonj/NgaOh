@@ -1,0 +1,22 @@
+{
+  "routerMap": [
+    {
+      "name": "TopicTitle",
+      "pageSourceFile": "src/main/ets/pages/TopicTitle.ets",
+      "buildFunction": "TopicTitleBuilder",
+      "data": {
+        "description": "this is titlePage"
+      }
+    },
+    {
+      "name": "TopicContent",
+      "pageSourceFile": "src/main/ets/pages/TopicContent.ets",
+      "buildFunction": "TopicContentBuilder"
+    },
+    {
+      "name": "WebView",
+      "pageSourceFile": "src/main/ets/pages/WebView.ets",
+      "buildFunction": "WebViewBuilder"
+    }
+  ]
+}

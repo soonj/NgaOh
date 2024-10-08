@@ -1,0 +1,9 @@
+{
+  "src": [
+    "pages/Home",
+    "pages/TopicPost",
+    "pages/TopicContent",
+    "pages/TopicTitle",
+    "pages/WebView"
+  ]
+}

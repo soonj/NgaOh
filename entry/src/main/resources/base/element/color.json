@@ -1,0 +1,40 @@
+{
+  "color": [
+    {
+      "name": "news_title_fontColor",
+      "value": "#1a3959"
+    },
+    {
+      "name": "news_content_fontColor",
+      "value": "#000000"
+    },
+    {
+      "name": "news_time_fontColor",
+      "value": "#FF989898"
+    },
+    {
+      "name": "start_window_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "main_container_background",
+      "value": "#F1F3F5"
+    },
+    {
+      "name": "link_blue",
+      "value": "#007DFF"
+    },
+    {
+      "name": "navigator_black",
+      "value": "#000000"
+    },
+    {
+      "name": "title_black",
+      "value": "#182431"
+    },
+    {
+      "name": "page_background_grey",
+      "value": "#F1F3F5"
+    }
+  ]
+}

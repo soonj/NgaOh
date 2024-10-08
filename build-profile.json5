@@ -1,0 +1,49 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "nga",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\ori\\.ohos\\config\\nga_MyApplication_w7f0pcsiSkjgpOtcqjMILCvJk-LmNSiw3nc41UFpwmE=.cer",
+          "storePassword": "0000001B4DA003F78399B9CA3484CA882575C16268D5D0EC08F041B782DD8625CBB57CEA165F387D7EAC36",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B57CB60874831ADD0099FE080D6EF08138A6D45D232568E030987EBDD7C5CDFB74A4063568BF65A",
+          "profile": "C:\\Users\\ori\\.ohos\\config\\nga_MyApplication_w7f0pcsiSkjgpOtcqjMILCvJk-LmNSiw3nc41UFpwmE=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\ori\\.ohos\\config\\nga_MyApplication_w7f0pcsiSkjgpOtcqjMILCvJk-LmNSiw3nc41UFpwmE=.p12"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "nga",
+        "compatibleSdkVersion": "5.0.0(12)",
+        "runtimeOS": "HarmonyOS",
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug",
+      },
+      {
+        "name": "release"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

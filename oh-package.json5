@@ -1,0 +1,14 @@
+{
+  "modelVersion": "5.0.0",
+  "description": "Please describe the basic information.",
+  "dependencies": {
+    "class-transformer": "^0.5.1",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@ohos/pulltorefresh": "^2.1.0",
+    "@ohos/hypium": "1.0.19",
+    "@ohos/hamock": "1.0.0"
+  },
+  "dynamicDependencies": {}
+}
