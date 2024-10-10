@@ -8,6 +8,7 @@ import { TopicTitleItem } from '../view/TopicTitleItem';
 import { LoadingComponent } from '../view/LoadingComponent';
 import { curves } from '@kit.ArkUI';
 import { TopicPostParam } from '../model/TopicPost';
+import { CommonConstants } from '../common/constants/CommonConstant';
 
 
 @Builder
@@ -119,6 +120,11 @@ struct TopicTitle {
         this.newsData.pushData(topicEntity);
       }
 
+    }).catch((code: number) => {
+      if (code === 15) {
+        this.pageStack.removeByName("TopicTitle")
+        this.pageStack.pushPathByName("WebView", CommonConstants.LOGIN_WEB_PAGE_URL)
+      }
     }).finally(() => {
       this.isLoading = false;
     });

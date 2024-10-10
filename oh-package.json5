@@ -3,7 +3,8 @@
   "description": "Please describe the basic information.",
   "dependencies": {
     "class-transformer": "^0.5.1",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "@ohos/photoview": "^2.1.0"
   },
   "devDependencies": {
     "@ohos/pulltorefresh": "^2.1.0",

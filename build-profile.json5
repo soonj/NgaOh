@@ -2,23 +2,23 @@
   "app": {
     "signingConfigs": [
       {
-        "name": "nga",
+        "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\ori\\.ohos\\config\\nga_MyApplication_w7f0pcsiSkjgpOtcqjMILCvJk-LmNSiw3nc41UFpwmE=.cer",
-          "storePassword": "0000001B4DA003F78399B9CA3484CA882575C16268D5D0EC08F041B782DD8625CBB57CEA165F387D7EAC36",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001B57CB60874831ADD0099FE080D6EF08138A6D45D232568E030987EBDD7C5CDFB74A4063568BF65A",
-          "profile": "C:\\Users\\ori\\.ohos\\config\\nga_MyApplication_w7f0pcsiSkjgpOtcqjMILCvJk-LmNSiw3nc41UFpwmE=.p7b",
+          "storePassword": "0000001F2B6791C570DA5E9DA5953E7C09D6F1D6AEADDBE5BA769E51B2A55897EDB6573345B45770678D9C8EC60A40",
+          "certpath": "C:/Users/ori/Downloads/ngaopensource.cer",
+          "keyAlias": "ngaopensource",
+          "keyPassword": "0000001F5EFA967F88C4F86E0F347379F5654C15DDFFD4AE59A6047D92DB7688C561CEFF862976A9C37C789145EF86",
+          "profile": "C:/Users/ori/Downloads/ngaopensourceRelease.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\ori\\.ohos\\config\\nga_MyApplication_w7f0pcsiSkjgpOtcqjMILCvJk-LmNSiw3nc41UFpwmE=.p12"
+          "storeFile": "C:/Users/ori/ngaopensource.p12"
         }
       }
     ],
     "products": [
       {
         "name": "default",
-        "signingConfig": "nga",
+        "signingConfig": "default",
         "compatibleSdkVersion": "5.0.0(12)",
         "runtimeOS": "HarmonyOS",
       }

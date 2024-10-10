@@ -14,30 +14,12 @@ import {
 } from '../model/TopicContent';
 
 export class TopicContentViewModel {
-  // addFavorite(tid: number): Promise<void> {
-  //   const url = `https://bbs.nga.cn/nuke.php?__lib=topic_favor&__output=8&noprefix&__act=topic_favor&action=add&tid=${tid}`;
-
-  // let param: Map<string, string | number> = {
-  //   "__output": '8',
-  //   "__lib": 'topic_favor',
-  //   "__act": 'topic_favor',
-  //   "action": 'add',
-  //   "tid": tid,
-  // };
-
-  // try {
-  //   const response: AxiosResponse = await this.dio.post(url, null, { ...config, params: param });
-  //   console.log(result);
-  // } catch (error) {
-  //   console.error(error);
-  // }
-  // }
 
   loadContent(tid: number, page: number): Promise<TopicContentEntity> {
-    return new Promise((resolve: Function, reject: Function) => {
+    return new Promise(async (resolve: Function, reject: Function) => {
       let url: string = this._buildUrl(tid, page);
 
-      httpRequestGet(url, this._buildParam(), this._buildHeader()).then((data) => {
+      httpRequestGet(url, this._buildParam(), await this._buildHeader()).then((data) => {
         if (data.code === 1) {
           reject("error");
         } else {
@@ -72,7 +54,6 @@ export class TopicContentViewModel {
             entity.topicTitle = result.data.__T.subject;
             resolve(entity);
           } catch (error) {
-            console.log("convertError" + error);
             reject("convertError");
           }
         }
@@ -164,8 +145,8 @@ export class TopicContentViewModel {
     };
   }
 
-  private _buildHeader(): Record<string, string> {
-    let cookie = PreferencesUtil.getPreferenceValue(CommonConstants.COOKIE_TITLE, CommonConstants.G_EMPTY);
+  private async _buildHeader(): Promise<Record<string, string>> {
+    let cookie = await PreferencesUtil.getPreferenceValue(CommonConstants.COOKIE_TITLE, CommonConstants.G_EMPTY);
     return { "Cookie": cookie.toString() };
   }
 }

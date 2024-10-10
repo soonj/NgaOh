@@ -87,7 +87,6 @@ export struct contentItem {
       HPRichText({
         richTextOption: this.richTextOption,
         onLinkPress: (e) => {
-          console.log(JSON.stringify(e))
           if (e.eventFnName == "photoPreview") {
             this.pageStack.pushPathByName("PhotoPreview", e.resourceSrc)
           } else {

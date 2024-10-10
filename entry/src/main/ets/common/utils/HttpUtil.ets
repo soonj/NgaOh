@@ -45,6 +45,8 @@ function httpRequest(url: string, method: http.RequestMethod, params?: string | 
             serverData.result = resultJson.result;
           } else {
             serverData.result = resultJson;
+            serverData.code = resultJson?.code;
+            serverData.msg = resultJson?.msg;
           }
         }
       } catch (error) {

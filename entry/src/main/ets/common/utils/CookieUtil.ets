@@ -19,7 +19,6 @@ export class CookieUtil {
 
     });
     cookies.forEach((value, key) => {
-      console.log(`Key: ${key}, Value: ${value}`);
       if (key == CommonConstants.COOKIE_KEY_UID) {
         uid = value;
       } else if (key == CommonConstants.COOKIE_KEY_UNAME) {
@@ -28,7 +27,6 @@ export class CookieUtil {
         cid = value;
       }
     });
-    console.log(`uid=${uid}, uName=${uName}, cid=${cid}`);
     return true;
   }
 }

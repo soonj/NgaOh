@@ -55,7 +55,6 @@ struct Login {
       })
         .onControllerAttached(async () => {
           let check = await PreferencesUtil.getPreferenceValue(CommonConstants.COOKIE_TITLE, CommonConstants.G_EMPTY)
-          console.log(`console-----------${check}`);
           if (check != CommonConstants.G_EMPTY) {
 
             webview.WebCookieManager.configCookieSync(CommonConstants.HOST,

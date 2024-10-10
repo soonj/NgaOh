@@ -10,6 +10,7 @@ import { TopicListBeanEntity, TopicListBeanResult, TopicListBeanResultT } from '
 import { TopicTitleInfo } from '../model/TopicTitleInfo';
 import { LengthMetrics } from '@kit.ArkUI';
 import util from '@ohos.util';
+import { JSON } from '@kit.ArkTS';
 
 const MASK_FONT_RED = 1;
 const MASK_FONT_BLUE = 2;
@@ -36,8 +37,8 @@ export class TopicTitleViewModel {
     return new Promise(async (resolve: Function, reject: Function) => {
       let url: string = this._buildUrl(board ,page);
       httpRequestGet(url, this._buildParam(board, page), await this._buildHeader()).then((data) => {
-        if (data.code === 1) {
-          reject("error");
+        if (data.code === 1 || data.code === 15) {
+          reject(data.code);
         } else {
           resolve(data.result);
         }
@@ -114,7 +115,9 @@ export class TopicTitleViewModel {
 
   private async _buildHeader(): Promise<Record<string, string>> {
     let cookie = await PreferencesUtil.getPreferenceValue(CommonConstants.COOKIE_TITLE, CommonConstants.G_EMPTY);
-    console.log("CookieCookieCookie" + cookie);
+    if (cookie == CommonConstants.G_EMPTY) {
+
+    }
     return { "Cookie": cookie.toString() };
   }
 }
