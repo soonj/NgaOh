@@ -2,7 +2,7 @@ import { TopicTitleInfo } from '../model/TopicTitleInfo';
 
 @ComponentV2
 export struct TopicTitleItem {
-  private entity: TopicTitleInfo = new TopicTitleInfo;
+  @Param entity: TopicTitleInfo = new TopicTitleInfo;
 
   build() {
     Column({ space: 10 }) {
