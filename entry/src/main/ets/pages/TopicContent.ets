@@ -12,8 +12,9 @@ import { ContentSource } from '../viewmodel/ContentDataSource';
 import { contentItem } from '../view/TopicContentItem';
 import { LoadingComponent } from '../view/LoadingComponent';
 import { TopicTitleInfo } from '../model/TopicTitleInfo';
-import { curves } from '@kit.ArkUI';
+import { curves, promptAction } from '@kit.ArkUI';
 import { TopicPostParam } from '../model/TopicPost';
+import { CommonConstants, HttpCode } from '../common/constants/CommonConstant';
 
 @Builder
 export function TopicContentBuilder() {
@@ -48,7 +49,6 @@ struct TopicContent {
     this.getContents();
   }
 
-
   build() {
     NavDestination() {
       Column() {
@@ -81,7 +81,6 @@ struct TopicContent {
           })
         }
       }
-      .backgroundColor("#FFF8E7")
       .height('100%')
     }
     .backgroundColor("#FFF0CD")
@@ -117,22 +116,37 @@ struct TopicContent {
   }
 
   getContents() {
-    this.contentModel.loadContent(this.tid, this.currentPage).then((topicContentResult: TopicContentEntity) => {
-      if (this.currentPage >= topicContentResult.totalPage) {
-        this.refreshConfigurator.setHasLoadMore(false);
-      } else {
-        this.refreshConfigurator.setHasLoadMore(true);
+    this.contentModel.loadContent(this.tid, this.currentPage)
+      .then((topicContentResult: TopicContentEntity) => {
+        if (this.currentPage >= topicContentResult.totalPage) {
+          this.refreshConfigurator.setHasLoadMore(false);
+        } else {
+          this.refreshConfigurator.setHasLoadMore(true);
+        }
+        this.contentData.pushDataList(...topicContentResult.contentList)
+        this.totalPage = topicContentResult.totalPage;
+      })
+      .catch((code: number) => {
+        if (code === HttpCode.TIMEOUT) {
+          promptAction.showToast({
+            message: '网络超时请重试',
+            duration: 2000
+          });
+        } else {
+          let url = "";
+          if (code === HttpCode.NOT_LOGIN) {
+            url = CommonConstants.LOGIN_WEB_PAGE_URL
+          } else if (code === HttpCode.PARSE_ERROR) {
+            url = this.contentModel._buildWebViewUrl(this.tid, this.currentPage)
+          }
+          this.pageStack.removeByName("TopicContent")
+          this.pageStack.pushPathByName("WebView", url)
+        }
       }
-      this.contentData.pushDataList(...topicContentResult.contentList)
-      this.totalPage = topicContentResult.totalPage;
-    }).catch(
-      () => {
-        this.pageStack.removeByName("TopicContent")
-        this.pageStack.pushPathByName("WebView", this.contentModel._buildWebViewUrl(this.tid, this.currentPage))
-      }
-    ).finally(() => {
-      this.isLoading = false;
-    });
+      )
+      .finally(() => {
+        this.isLoading = false;
+      });
   }
 
   menus(): NavigationMenuItem[] {

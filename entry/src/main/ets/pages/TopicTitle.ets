@@ -6,9 +6,9 @@ import { BoardInfo } from '../model/BoardInfo';
 import { TopicListBeanResult } from '../model/TopicTitle';
 import { TopicTitleItem } from '../view/TopicTitleItem';
 import { LoadingComponent } from '../view/LoadingComponent';
-import { curves } from '@kit.ArkUI';
+import { curves, promptAction } from '@kit.ArkUI';
 import { TopicPostParam } from '../model/TopicPost';
-import { CommonConstants } from '../common/constants/CommonConstant';
+import { CommonConstants, HttpCode } from '../common/constants/CommonConstant';
 
 
 @Builder
@@ -121,9 +121,18 @@ struct TopicTitle {
       }
 
     }).catch((code: number) => {
-      if (code === 15) {
+      if (code === HttpCode.TIMEOUT) {
+        promptAction.showToast({
+          message: '网络超时请重试',
+          duration: 2000
+        });
+      } else {
+        let url = "";
+        if (code === HttpCode.NOT_LOGIN) {
+          url = CommonConstants.LOGIN_WEB_PAGE_URL
+        }
         this.pageStack.removeByName("TopicTitle")
-        this.pageStack.pushPathByName("WebView", CommonConstants.LOGIN_WEB_PAGE_URL)
+        this.pageStack.pushPathByName("WebView", url)
       }
     }).finally(() => {
       this.isLoading = false;

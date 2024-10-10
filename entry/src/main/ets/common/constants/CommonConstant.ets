@@ -162,7 +162,6 @@ export class CommonConstants {
   static readonly COOKIE_TITLE: string = 'saveCookie';
   static readonly G_STORE: string = 'SOONJ';
   static readonly G_EMPTY: string = '';
-
   static readonly TOKEN: string = 'TOKEN';
 
 }
@@ -175,4 +174,11 @@ export enum CookieOperation {
   SET_COOKIE = '设置cookie',
   DELETE_COOKIE = '删除cookie',
   VERIFY_COOKIE = '验证cookie'
+}
+
+export enum HttpCode {
+  NOT_LOGIN = 15,
+  SUCCESS = 200,
+  TIMEOUT = 400,
+  PARSE_ERROR = 500,
 }

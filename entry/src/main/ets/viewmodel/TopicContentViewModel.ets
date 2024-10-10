@@ -1,4 +1,4 @@
-import { CommonConstants } from '../common/constants/CommonConstant';
+import { CommonConstants, HttpCode } from '../common/constants/CommonConstant';
 import { HtmlDecoderManager } from '../common/utils/HtmlUtil';
 import { httpRequestGet } from '../common/utils/HttpUtil';
 import PreferencesUtil from '../common/utils/PreferencesUtil';
@@ -18,49 +18,51 @@ export class TopicContentViewModel {
   loadContent(tid: number, page: number): Promise<TopicContentEntity> {
     return new Promise(async (resolve: Function, reject: Function) => {
       let url: string = this._buildUrl(tid, page);
-
       httpRequestGet(url, this._buildParam(), await this._buildHeader()).then((data) => {
-        if (data.code === 1) {
-          reject("error");
+        if (data.code !== HttpCode.SUCCESS) {
+          reject(data.code);
         } else {
-          // resolve(data.result);
-          let result: TopicContentResult = data.result as TopicContentResult;
-
-          let entity: TopicContentEntity = new TopicContentEntity;
-          let htmlDecoder = new HtmlDecoderManager();
           try {
-            this._convertDataMap(result);
-            this._convertAuthorMap(result, entity);
-            Object.keys(result.data.__R).forEach((key) => {
-              let v = Object(result.data.__R)[key] as TopicContentBeanDataRR;
-              let rowEntity: TopicRowEntity = new TopicRowEntity;
-              let louIndex: number = v.lou;
-              rowEntity.content = htmlDecoder.decode(v.content);
-              rowEntity.subject = v.subject;
-              rowEntity.postDate = v.postdate;
-              rowEntity.floor = `${louIndex}楼`;
-              rowEntity.pid = v.pid.toString();
-              rowEntity.page = page;
-              let uid: string = v.authorid.toString();
-              rowEntity.author = entity.authorMap[uid];
-              rowEntity.isHidden = rowEntity.content == "" && v.alterinfo == "";
-              this._convertDeviceType(v, rowEntity);
-              this._convertComment(v, entity, rowEntity);
-              this._convertAttachment(v, result.data.__GLOBAL._ATTACH_BASE_VIEW, rowEntity);
-              entity.contentList.push(rowEntity);
-
-            });
-            entity.totalPage = Math.ceil(result.data.__ROWS / 20);
-            entity.topicTitle = result.data.__T.subject;
+            let entity = this._parseResult(data.result, page);
             resolve(entity);
           } catch (error) {
-            reject("convertError");
+            reject(HttpCode.PARSE_ERROR);
           }
         }
-      }).catch(() => {
-        reject("loadContent Error");
+      }).catch((code: number) => {
+        reject(code);
       });
     });
+  }
+
+  private _parseResult(resultObject: string | Object | ArrayBuffer, page: number): TopicContentEntity {
+    let result: TopicContentResult = resultObject as TopicContentResult;
+    let entity: TopicContentEntity = new TopicContentEntity;
+    let htmlDecoder = new HtmlDecoderManager();
+    this._convertDataMap(result);
+    this._convertAuthorMap(result, entity);
+    Object.keys(result.data.__R).forEach((key) => {
+      let v = Object(result.data.__R)[key] as TopicContentBeanDataRR;
+      let rowEntity: TopicRowEntity = new TopicRowEntity;
+      let louIndex: number = v.lou;
+      rowEntity.content = htmlDecoder.decode(v.content);
+      rowEntity.subject = v.subject;
+      rowEntity.postDate = v.postdate;
+      rowEntity.floor = `${louIndex}楼`;
+      rowEntity.pid = v.pid.toString();
+      rowEntity.page = page;
+      let uid: string = v.authorid.toString();
+      rowEntity.author = entity.authorMap[uid];
+      rowEntity.isHidden = rowEntity.content == "" && v.alterinfo == "";
+      this._convertDeviceType(v, rowEntity);
+      this._convertComment(v, entity, rowEntity);
+      this._convertAttachment(v, result.data.__GLOBAL._ATTACH_BASE_VIEW, rowEntity);
+      entity.contentList.push(rowEntity);
+
+    });
+    entity.totalPage = Math.ceil(result.data.__ROWS / 20);
+    entity.topicTitle = result.data.__T.subject;
+    return entity;
   }
 
   private _convertDeviceType(dataBean: TopicContentBeanDataRR, entity: TopicRowEntity): void {
@@ -148,12 +150,5 @@ export class TopicContentViewModel {
   private async _buildHeader(): Promise<Record<string, string>> {
     let cookie = await PreferencesUtil.getPreferenceValue(CommonConstants.COOKIE_TITLE, CommonConstants.G_EMPTY);
     return { "Cookie": cookie.toString() };
-  }
-}
-
-class HtmlConvertFactory {
-  static async convert2Html(entity: TopicContentEntity): Promise<string> {
-    // Implement HTML conversion logic
-    return '';
   }
 }

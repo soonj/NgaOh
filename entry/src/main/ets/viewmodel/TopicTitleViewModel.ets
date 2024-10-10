@@ -1,5 +1,5 @@
 import { http } from '@kit.NetworkKit';
-import { CommonConstants } from '../common/constants/CommonConstant';
+import { CommonConstants, HttpCode } from '../common/constants/CommonConstant';
 import { httpRequestGet } from '../common/utils/HttpUtil';
 import PreferencesUtil from '../common/utils/PreferencesUtil';
 import { convertAnonymousName } from '../common/utils/StringUtil';
@@ -37,13 +37,13 @@ export class TopicTitleViewModel {
     return new Promise(async (resolve: Function, reject: Function) => {
       let url: string = this._buildUrl(board ,page);
       httpRequestGet(url, this._buildParam(board, page), await this._buildHeader()).then((data) => {
-        if (data.code === 1 || data.code === 15) {
+        if (data.code !== HttpCode.SUCCESS) {
           reject(data.code);
         } else {
           resolve(data.result);
         }
-      }).catch(() => {
-        reject("error");
+      }).catch((code: number) => {
+        reject(code);
       });
     });
   }
@@ -81,12 +81,6 @@ export class TopicTitleViewModel {
   hasNextPage(): boolean {
     return this._hasNextPage;
   }
-
-  // async loadNextPage(board: BoardInfo): Promise<void> {
-  //   await this.loadPage(board, this.bloc.bean.pageIndex + 1);
-  // }
-
-
 
   private _buildUrl(board?: BoardInfo, page?: number): string {
     return `${CommonConstants.HOST}/thread.php?fid=${board?.fid}&page=${page}`;
