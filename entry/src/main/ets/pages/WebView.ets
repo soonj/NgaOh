@@ -15,13 +15,13 @@ export function WebViewBuilder() {
 }
 
 @Entry
-@Component
+@ComponentV2
 struct WebView {
   fileAccess: boolean = true;
   controller: webview.WebviewController = new webview.WebviewController();
   isRedirect: boolean = false;
-  @State srcUrl: string = '';
-  @Consume('pageStack') pageStack: NavPathStack;
+  @Local srcUrl: string = '';
+  @Consumer('pageStack') pageStack: NavPathStack = new NavPathStack();
 
   onPageShow(): void {
     this.isRedirect = false;
@@ -71,6 +71,26 @@ struct WebView {
               }
             }
             return false;
+          })
+          .onAlert((event) => {
+            if (event) {
+              console.log("event.url:" + event.url);
+              console.log("event.message:" + event.message);
+              AlertDialog.show({
+                title: 'Alert',
+                message: event?.message,
+                confirm: {
+                  value: 'Confirm',
+                  action: () => {
+                    event.result.handleConfirm();
+                  }
+                },
+                cancel: () => {
+                  event.result.handleCancel();
+                }
+              })
+            }
+            return true;
           })
           .onConfirm((event) => {
             if (event) {

@@ -7,30 +7,21 @@ export function PhotoPreviewBuilder() {
   photoPreview();
 }
 
-@Component
+@ComponentV2
 struct photoPreview {
-  @State src: string = "";
-  @Consume('pageStack') pageStack: NavPathStack;
+  src: string = "";
+  @Local data: PhotoView.Model = new PhotoView.Model();
+  @Consumer('pageStack') pageStack: NavPathStack = new NavPathStack;
 
   //设置图片源
   aboutToAppear() {
     this.src = this.pageStack.getParamByName("PhotoPreview")[0] as string;
+    this.data.setImageURI(this.src).setZoomable(true).setScale(1,false).setMaximumScale(3);
   }
 
   build() {
     NavDestination() {
-      PhotoView({
-        // todo: 图片支持缩放
-        model: new PhotoView.Model()
-          .setImageURI(this.src)
-          .setScale(1, true)
-          .setZoomable(true)
-          .setImageFit(ImageFit.Contain)
-          .setOnPhotoTapListener({
-            onPhotoTap(x: number, y: number) {
-            }
-          })
-      })
+      PhotoView({ model: this.data })
     }.backgroundColor("#FFF0CD")
   }
 }

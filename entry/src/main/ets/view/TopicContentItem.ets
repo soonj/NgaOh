@@ -1,13 +1,29 @@
-import { HPRichText, ObservedHPRichText, RichTextOption } from '@ohasasugar/hp-richtext';
+import { HPRichTextV2, ObservedHPRichText, RichTextOption, RichTextOptionModelV2 } from '@ohasasugar/hp-richtext';
 import { TopicRowEntity } from '../model/TopicContent';
 
 
-@Component
-@Preview
+@ComponentV2
 export struct contentItem {
-  private entity: TopicRowEntity = new TopicRowEntity;
-  @State richTextOption: RichTextOption = { content: "" }
-  @Consume('pageStack') pageStack: NavPathStack;
+  @Param @Once entity: TopicRowEntity = new TopicRowEntity;
+  @Consumer('pageStack') pageStack: NavPathStack = new NavPathStack();
+  richTextModel: RichTextOptionModelV2 = new RichTextOptionModelV2();
+
+  aboutToAppear(): void {
+    this.richTextModel.richTextOption = {
+      content: this.entity.content,
+      imageProp:{objectFit: 'Auto'},
+    }
+    this.richTextModel.needScroll = false;
+    this.richTextModel.onLinkPress = (e) => {
+      if (e.eventFnName == "photoPreview") {
+        this.pageStack.pushPathByName("PhotoPreview", e.resourceSrc)
+      } else {
+        this.pageStack.pushPathByName("WebView", e.link)
+      }
+
+      return e;
+    }
+  }
 
   build() {
     Flex({ direction: FlexDirection.Column }) {
@@ -73,29 +89,7 @@ export struct contentItem {
       .width("100%")
       .margin({ top: $r('app.string.news_content_margin'), bottom: $r('app.string.news_content_margin') })
 
-
-
-      // Text(this.entity.content)
-      //   .fontSize(18)
-      //   .fontColor($r('app.color.news_title_fontColor'))
-      //   .textAlign(TextAlign.Start)
-      //   .maxLines(1000)
-      //   .maxFontSize(20)
-      //   .minFontSize(15)
-      //   .fontWeight(400)
-      //   .margin("10vp")
-      HPRichText({
-        richTextOption: this.richTextOption,
-        onLinkPress: (e) => {
-          if (e.eventFnName == "photoPreview") {
-            this.pageStack.pushPathByName("PhotoPreview", e.resourceSrc)
-          } else {
-            this.pageStack.pushPathByName("WebView", e.link)
-          }
-
-          return e;
-        }
-      })
+      HPRichTextV2({richTextModel: this.richTextModel})
         .padding({top:"15vp", bottom:"15vp"})
       Divider().color($r('app.color.link_blue'))
     }

@@ -1,7 +1,6 @@
 import { TopicTitleInfo } from '../model/TopicTitleInfo';
 
-@Component
-@Preview
+@ComponentV2
 export struct TopicTitleItem {
   private entity: TopicTitleInfo = new TopicTitleInfo;
 

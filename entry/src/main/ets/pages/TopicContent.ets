@@ -22,24 +22,24 @@ export function TopicContentBuilder() {
 
 @Entry
 @Preview
-@Component
+@ComponentV2
 struct TopicContent {
-  @State tid: number = 0;
+  @Local tid: number = 0;
   contentModel: TopicContentViewModel = new TopicContentViewModel();
-  @State contentData: ContentSource = new ContentSource();
+  @Local contentData: ContentSource = new ContentSource();
   private scroller: Scroller = new Scroller();
-  @State currentPage: number = 1;
-  @State firstIndex: number = 0;
-  @State totalPage: number = 1;
-  @State topicTitle: string = "";
+  @Local currentPage: number = 1;
+  @Local firstIndex: number = 0;
+  @Local totalPage: number = 1;
+  @Local topicTitle: string = "";
   readonly ANIMATION_DURATION: number = 500;
   readonly SWITCH_BUTTON: number = 3;
-  @Consume('pageStack') pageStack: NavPathStack;
+  @Consumer('pageStack') pageStack: NavPathStack = new NavPathStack();
   refreshConfigurator: PullToRefreshConfigurator = new PullToRefreshConfigurator()
     .setLoadTextPullUp1("上拉刷新")
     .setLoadTextPullUp2("放开刷新")
     .setLoadTextLoading("正在玩命加载中...");
-  @State isLoading: boolean = true;
+  @Local isLoading: boolean = true;
 
   aboutToAppear() {
     let topicTitleInfo = this.pageStack.getParamByName("TopicContent")[0] as TopicTitleInfo;
@@ -95,7 +95,7 @@ struct TopicContent {
       List({ space: 1, scroller: this.scroller }) {
         LazyForEach(this.contentData, (item: ViewData) => {
           ListItem() {
-            contentItem({ entity: item, richTextOption: {content: item.content, imageProp: {objectFit: 'Auto'}} })
+            contentItem({ entity: item })
           }
           .margin({
             bottom: $r('app.string.news_list_margin_bottom'),

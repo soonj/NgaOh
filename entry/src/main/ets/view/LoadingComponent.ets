@@ -1,7 +1,6 @@
 import { SayingConstants } from '../common/constants/SayingConstant'
 
-@Component
-@Preview
+@ComponentV2
 export struct LoadingComponent {
   private saying: string = "";
 

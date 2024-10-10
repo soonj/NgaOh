@@ -11,13 +11,12 @@ import { TopicPostBuilder } from './TopicPost';
 import { PhotoPreviewBuilder } from '../view/photoPreviewComponent';
 
 @Entry
-@Component
+@ComponentV2
 struct Home {
-  @State message: string = 'NGA';
   static readonly URL_BOARD_ICON: string = "http://img4.nga.178.com/ngabbs/nga_classic/f/app/%s.png";
-  @State tabArray: Array<Board> = [];
-  @State currentTabIndex: number = 0;
-  @Provide('pageStack') pageStack: NavPathStack = new NavPathStack(); //导航栈管理类对象
+  @Local tabArray: Array<Board> = [];
+  @Local currentTabIndex: number = 0;
+  @Provider('pageStack') pageStack: NavPathStack = new NavPathStack(); //导航栈管理类对象
 
   // 路由
   @Builder

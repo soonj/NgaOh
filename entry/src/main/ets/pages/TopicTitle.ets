@@ -18,17 +18,17 @@ export function TopicTitleBuilder() {
 
 @Entry
 @Preview
-@Component
+@ComponentV2
 struct TopicTitle {
-  @State boardInfo: BoardInfo = new BoardInfo();
-  @State newsData: NewsDataSource = new NewsDataSource();
+  @Local boardInfo: BoardInfo = new BoardInfo();
+  @Local newsData: NewsDataSource = new NewsDataSource();
   titleModel: TopicTitleViewModel = new TopicTitleViewModel();
   private scroller: Scroller = new Scroller();
-  @State currentPage: number = 1;
-  @State firstIndex: number = 0;
-  @State totalPage: number = 0;
-  @Consume('pageStack') pageStack: NavPathStack;
-  @State isLoading: boolean = true;
+  @Local currentPage: number = 1;
+  @Local firstIndex: number = 0;
+  @Local totalPage: number = 0;
+  @Consumer('pageStack') pageStack: NavPathStack = new NavPathStack();
+  @Local isLoading: boolean = true;
 
   aboutToAppear() {
 

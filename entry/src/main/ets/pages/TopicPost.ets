@@ -9,10 +9,10 @@ export function TopicPostBuilder() {
 }
 
 @Entry
-@Component
+@ComponentV2
 struct TopicPost {
-  @State topicPostParam: TopicPostParam = new TopicPostParam;
-  @Consume('pageStack') pageStack: NavPathStack;
+  @Local topicPostParam: TopicPostParam = new TopicPostParam;
+  @Consumer('pageStack') pageStack: NavPathStack = new NavPathStack();
 
   aboutToAppear(): void {
     this.topicPostParam = this.pageStack.getParamByName("TopicPost")[0] as TopicPostParam;
