@@ -65,12 +65,15 @@ struct TopicPost {
       'icon': 'resources/base/media/ic_public_ok.svg',
       'action': () => {
         let topicPostViewModel = new TopicPostViewModel;
-        this.pageStack.pop()
-        // topicPostViewModel.post(this.topicPostParam).then((res: boolean) => {
-        //   if (res) {
-        //     this.pageStack.pop()
-        //   }
-        // })
+        topicPostViewModel.post(this.topicPostParam).then((res: boolean) => {
+          if (res) {
+            promptAction.showToast({
+              message: '发送成功,请手动刷新',
+              duration: 2000
+            });
+            this.pageStack.pop()
+          }
+        })
       }
     }
   }
