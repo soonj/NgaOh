@@ -52,20 +52,20 @@ struct TopicTitle {
             },
             onRefresh: () => {
               return new Promise<string>((resolve, reject) => {
+                this.newsData.clear();
+                this.getNews();
                 setTimeout(() => {
-                  this.newsData.clear();
-                  this.getNews();
                   resolve("刷新成功");
-                }, 1000);
+                },2000)
               });
             },
             onLoadMore: () => {
               return new Promise<string>((resolve, reject) => {
+                this.currentPage++;
+                this.getNews();
                 setTimeout(() => {
-                  this.currentPage++;
-                  this.getNews();
                   resolve("刷新成功");
-                }, 1000);
+                },2000)
               });
             },
             customLoad: null,
@@ -112,31 +112,33 @@ struct TopicTitle {
   }
 
   getNews() {
-    this.titleModel.loadPage(this.boardInfo, this.currentPage).then((newsModelData: TopicListBeanResult) => {
-      let dataCount = newsModelData.__T.length;
-      this.totalPage = Math.ceil(newsModelData.__ROWS / newsModelData.iTRowsPage);
-      for (let j = 0; j < dataCount; j++) {
-        let topicEntity: ViewData = TopicTitleViewModel._convertToTopicTitleInfo(newsModelData.__T[j]);
-        this.newsData.pushData(topicEntity);
-      }
-
-    }).catch((code: number) => {
-      if (code === HttpCode.TIMEOUT) {
-        promptAction.showToast({
-          message: '网络超时请重试',
-          duration: 2000
-        });
-      } else {
-        let url = "";
-        if (code === HttpCode.NOT_LOGIN) {
-          url = CommonConstants.LOGIN_WEB_PAGE_URL
+    this.titleModel.loadPage(this.boardInfo, this.currentPage)
+      .then((newsModelData: TopicListBeanResult) => {
+        let dataCount = newsModelData.__T.length;
+        this.totalPage = Math.ceil(newsModelData.__ROWS / newsModelData.iTRowsPage);
+        for (let j = 0; j < dataCount; j++) {
+          let topicEntity: ViewData = TopicTitleViewModel._convertToTopicTitleInfo(newsModelData.__T[j]);
+          this.newsData.pushData(topicEntity);
         }
-        this.pageStack.removeByName("TopicTitle")
-        this.pageStack.pushPathByName("WebView", url)
-      }
-    }).finally(() => {
-      this.isLoading = false;
-    });
+      })
+      .catch((code: number) => {
+        if (code === HttpCode.TIMEOUT) {
+          promptAction.showToast({
+            message: '网络超时请重试',
+            duration: 2000
+          });
+        } else {
+          let url = "";
+          if (code === HttpCode.NOT_LOGIN) {
+            url = CommonConstants.LOGIN_WEB_PAGE_URL
+          }
+          this.pageStack.removeByName("TopicTitle")
+          this.pageStack.pushPathByName("WebView", url)
+        }
+      })
+      .finally(() => {
+        this.isLoading = false;
+      });
   }
 
   menus(): NavigationMenuItem[] {

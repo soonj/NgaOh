@@ -37,9 +37,6 @@ struct TopicContent {
   readonly SWITCH_BUTTON: number = 3;
   @Consumer('pageStack') pageStack: NavPathStack = new NavPathStack();
   refreshConfigurator: PullToRefreshConfigurator = new PullToRefreshConfigurator()
-    .setLoadTextPullUp1("上拉刷新")
-    .setLoadTextPullUp2("放开刷新")
-    .setLoadTextLoading("正在玩命加载中...");
   @Local isLoading: boolean = true;
 
   aboutToAppear() {
@@ -66,14 +63,18 @@ struct TopicContent {
                 this.contentData.clear();
                 this.currentPage = 1;
                 this.getContents();
-                resolve("刷新成功");
+                setTimeout(() => {
+                  resolve("刷新成功");
+                },2000)
               });
             },
             onLoadMore: () => {
               return new Promise<string>((resolve, reject) => {
-                resolve("");
                 this.currentPage++;
                 this.getContents();
+                setTimeout(() => {
+                  resolve("刷新成功");
+                },2000)
               });
             },
             customLoad: null,
