@@ -1,7 +1,7 @@
 import { CommonConstants } from '../constants/CommonConstant';
 import { util } from '@kit.ArkTS';
 
-export  function convertAnonymousName (name: string) {
+export function convertAnonymousName (name: string) {
   let buffer: string[] = [];
   let i = 6;
 

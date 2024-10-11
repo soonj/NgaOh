@@ -1,4 +1,4 @@
-import { util } from '@kit.ArkTS';
+import { UriEncoderWithCharset } from '../common/utils/UriEncoderWithCharset';
 
 export class TopicPostParam {
 
@@ -14,12 +14,8 @@ export class TopicPostParam {
   anonymous: boolean = false;
 
   toUrlString() {
-    let gbkContent: string = encodeURIComponent(this.postContent);
-    let gbkSubject: string = encodeURIComponent(this.subject);
-
-    let decoder = util.TextDecoder.create("gbk", {ignoreBOM:true});
-    let gbkContentStr = decoder.decodeWithStream(new util.TextEncoder().encodeInto(gbkContent));
-    let gbkSubjectStr = decoder.decodeWithStream(new util.TextEncoder().encodeInto(gbkSubject));
+    let gbkContentStr: string = UriEncoderWithCharset.encode(this.postContent, undefined, "gbk");
+    let gbkSubjectStr: string = UriEncoderWithCharset.encode(this.subject, undefined, "gbk");;
     let urlStr =
         "step=2&&__output=14" +
         `&post_content=${gbkContentStr}` +
