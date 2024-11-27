@@ -1,4 +1,4 @@
-import { PullToRefresh } from '@ohos/pulltorefresh'
+import { PullToRefresh, PullToRefreshV2 } from '@ohos/pulltorefresh'
 import { NewsDataSource } from '../viewmodel/TitleDataSource';
 import { TopicTitleInfo as ViewData } from '../model/TopicTitleInfo';
 import { TopicTitleViewModel } from '../viewmodel/TopicTitleViewModel';
@@ -45,7 +45,7 @@ struct TopicTitle {
         if (this.isLoading) {
           LoadingComponent()
         } else {
-          PullToRefresh({
+          PullToRefreshV2({
             scroller: this.scroller,
             customList: () => {
               this.getListView();
@@ -53,19 +53,17 @@ struct TopicTitle {
             onRefresh: () => {
               return new Promise<string>((resolve, reject) => {
                 this.newsData.clear();
-                this.getNews();
-                setTimeout(() => {
+                this.getNews().then(() => {
                   resolve("刷新成功");
-                },2000)
+                });
               });
             },
             onLoadMore: () => {
               return new Promise<string>((resolve, reject) => {
                 this.currentPage++;
-                this.getNews();
-                setTimeout(() => {
-                  resolve("刷新成功");
-                },2000)
+                this.getNews().then(() => {
+                  resolve("加载成功");
+                });
               });
             },
             customLoad: null,
@@ -111,34 +109,37 @@ struct TopicTitle {
     this.newsData.clear();
   }
 
-  getNews() {
-    this.titleModel.loadPage(this.boardInfo, this.currentPage)
-      .then((newsModelData: TopicListBeanResult) => {
-        let dataCount = newsModelData.__T.length;
-        this.totalPage = Math.ceil(newsModelData.__ROWS / newsModelData.iTRowsPage);
-        for (let j = 0; j < dataCount; j++) {
-          let topicEntity: ViewData = TopicTitleViewModel._convertToTopicTitleInfo(newsModelData.__T[j]);
-          this.newsData.pushData(topicEntity);
-        }
-      })
-      .catch((code: number) => {
-        if (code === HttpCode.TIMEOUT) {
-          promptAction.showToast({
-            message: '网络超时请重试',
-            duration: 2000
-          });
-        } else {
-          let url = "";
-          if (code === HttpCode.NOT_LOGIN) {
-            url = CommonConstants.LOGIN_WEB_PAGE_URL
+  getNews(): Promise<boolean> {
+    return new Promise((resolve: Function) => {
+      this.titleModel.loadPage(this.boardInfo, this.currentPage)
+        .then((newsModelData: TopicListBeanResult) => {
+          let dataCount = newsModelData.__T.length;
+          this.totalPage = Math.ceil(newsModelData.__ROWS / newsModelData.iTRowsPage);
+          for (let j = 0; j < dataCount; j++) {
+            let topicEntity: ViewData = TopicTitleViewModel._convertToTopicTitleInfo(newsModelData.__T[j]);
+            this.newsData.pushData(topicEntity);
           }
-          this.pageStack.removeByName("TopicTitle")
-          this.pageStack.pushPathByName("WebView", url)
-        }
-      })
-      .finally(() => {
-        this.isLoading = false;
-      });
+        })
+        .catch((code: number) => {
+          if (code === HttpCode.TIMEOUT) {
+            promptAction.showToast({
+              message: '网络超时请重试',
+              duration: 2000
+            });
+          } else {
+            let url = "";
+            if (code === HttpCode.NOT_LOGIN) {
+              url = CommonConstants.LOGIN_WEB_PAGE_URL
+            }
+            this.pageStack.removeByName("TopicTitle")
+            this.pageStack.pushPathByName("WebView", url)
+          }
+        })
+        .finally(() => {
+          this.isLoading = false;
+          resolve(true);
+        });
+    });
   }
 
   menus(): NavigationMenuItem[] {

@@ -6,8 +6,8 @@
   "author": "",
   "license": "",
   "dependencies": {
-    "@ohos/pulltorefresh": "^2.1.0",
-    "@ohasasugar/hp-richtext": "^3.0.2",
+    "@ohos/pulltorefresh": "^2.1.1",
+    "@ohasasugar/hp-richtext": "^3.0.4",
     "@ohos/photoview": "^2.1.0",
   }
 }

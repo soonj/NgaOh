@@ -1,4 +1,4 @@
-import { PullToRefresh, PullToRefreshConfigurator } from '@ohos/pulltorefresh'
+import { PullToRefresh, PullToRefreshConfigurator, PullToRefreshV2 } from '@ohos/pulltorefresh'
 import { NewsDataSource } from '../viewmodel/TitleDataSource';
 import { TopicContentViewModel } from '../viewmodel/TopicContentViewModel';
 import {
@@ -52,7 +52,7 @@ struct TopicContent {
         if (this.isLoading) {
           LoadingComponent()
         } else {
-          PullToRefresh({
+          PullToRefreshV2({
             scroller: this.scroller,
             refreshConfigurator: this.refreshConfigurator,
             customList: () => {
@@ -62,19 +62,17 @@ struct TopicContent {
               return new Promise<string>((resolve, reject) => {
                 this.contentData.clear();
                 this.currentPage = 1;
-                this.getContents();
-                setTimeout(() => {
+                this.getContents().then(() =>{
                   resolve("刷新成功");
-                },2000)
+                });
               });
             },
             onLoadMore: () => {
               return new Promise<string>((resolve, reject) => {
                 this.currentPage++;
-                this.getContents();
-                setTimeout(() => {
-                  resolve("刷新成功");
-                },2000)
+                this.getContents().then(() =>{
+                  resolve("加载成功");
+                });
               });
             },
             customLoad: null,
@@ -116,8 +114,8 @@ struct TopicContent {
     this.contentData.clear();
   }
 
-  getContents() {
-    this.contentModel.loadContent(this.tid, this.currentPage)
+  getContents(): Promise<boolean> {
+    return new Promise((resolve: Function) => {this.contentModel.loadContent(this.tid, this.currentPage)
       .then((topicContentResult: TopicContentEntity) => {
         if (this.currentPage >= topicContentResult.totalPage) {
           this.refreshConfigurator.setHasLoadMore(false);
@@ -147,7 +145,8 @@ struct TopicContent {
       )
       .finally(() => {
         this.isLoading = false;
-      });
+        resolve(true);
+      });});
   }
 
   menus(): NavigationMenuItem[] {
