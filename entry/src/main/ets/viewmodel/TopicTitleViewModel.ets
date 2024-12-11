@@ -149,9 +149,9 @@ function _convertTextStyle(misc: string | null): TextStyle {
   let waitDecodeArr = that.decodeSync(misc)
   let base64Decoder = util.TextDecoder.create('base64')
   let utf8Decoder = util.TextDecoder.create('utf-8')
-  let bytes = base64Decoder.decodeWithStream(waitDecodeArr)
+  let bytes = base64Decoder.decodeToString(waitDecodeArr)
   waitDecodeArr = that.decodeSync(bytes)
-  let value = utf8Decoder.decodeWithStream(waitDecodeArr);
+  let value = utf8Decoder.decodeToString(waitDecodeArr);
   let pos = 0;
   let fontWeight = 'normal';
   let color = 'black';

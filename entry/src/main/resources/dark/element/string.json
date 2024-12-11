@@ -1,0 +1,124 @@
+{
+  "string": [
+    {
+      "name": "news_title_image_height",
+      "value": "16vp"
+    },
+    {
+      "name": "news_title_image_width",
+      "value": "40vp"
+    },
+    {
+      "name": "news_title_row_height",
+      "value": "20vp"
+    },
+    {
+      "name": "news_title_row_margin_top",
+      "value": "10vp"
+    },
+    {
+      "name": "news_list_margin_bottom",
+      "value": "5vp"
+    },
+    {
+      "name": "news_List_width",
+      "value": "100%"
+    },
+    {
+      "name": "news_page_height",
+      "value": "93.3%"
+    },
+    {
+      "name": "image_margin",
+      "value": "12vp"
+    },
+    {
+      "name": "list_image_height",
+      "value": "110vp"
+    },
+    {
+      "name": "list_image_weight",
+      "value": "110vp"
+    },
+    {
+      "name": "city_text_width",
+      "value": "20%"
+    },
+    {
+      "name": "city_padding_right",
+      "value": "10%"
+    },
+    {
+      "name": "news_content_height",
+      "value": "14vp"
+    },
+    {
+      "name": "news_content_margin",
+      "value": "10vp"
+    },
+    {
+      "name": "news_column_margin",
+      "value": "12vp"
+    },
+    {
+      "name": "news_row_padding",
+      "value": "12vp"
+    },
+    {
+      "name": "news_item_height",
+      "value": "110vp"
+    },
+    {
+      "name": "text_input_border",
+      "value": "1.5"
+    },
+    {
+      "name": "home_header_stack_width",
+      "value": "95%"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "Web component"
+    },
+    {
+      "name": "button_confirm",
+      "value": "Confirm"
+    },
+    {
+      "name": "dialog_message",
+      "value": "Message"
+    },
+    {
+      "name": "navigator_name",
+      "value": "Web component"
+    },
+    {
+      "name": "title_name",
+      "value": "In web component"
+    },
+    {
+      "name": "write_success",
+      "value": "Write cookie success"
+    },
+    {
+      "name": "write_fail",
+      "value": "Write cookie fail"
+    },
+    {
+      "name": "delete_success",
+      "value": "Delete cookie success"
+    },
+    {
+      "name": "test_content",
+      "value": "info=test writing cookie"
+    },
+    {
+      "name": "origin_cookie",
+      "value": "originCookie"
+    },
+    {
+      "name": "load_error",
+      "value": "Failed to load the page: please check your network connection."
+    }
+  ]
+}

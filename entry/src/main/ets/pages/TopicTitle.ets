@@ -75,7 +75,7 @@ struct TopicTitle {
       .height('100%')
     }
     .menus(this.menus())
-    .backgroundColor("#FFF0CD")
+    .backgroundColor($r("app.color.nga_background"))
     .title(this.boardInfo?.name)
   }
 
@@ -89,7 +89,8 @@ struct TopicTitle {
               .onClick(() => {
                 this.pageStack.pushPathByName("TopicContent", item)
               })
-              .backgroundColor(index % 2 == 0 ? "#FFF8E7" : "#FFF0CD")
+              .backgroundColor(index % 2 == 0 ? $r('app.color.nga_background_secondary')
+                : $r('app.color.nga_background'))
           }
           .margin({
             bottom: $r('app.string.news_list_margin_bottom'),

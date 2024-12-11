@@ -22,6 +22,6 @@ struct photoPreview {
   build() {
     NavDestination() {
       PhotoView({ model: this.data })
-    }.backgroundColor("#FFF0CD")
+    }.backgroundColor($r("app.color.nga_background"))
   }
 }

@@ -2,11 +2,11 @@
   "color": [
     {
       "name": "nga_background",
-      "value": "#FFF0CD"
+      "value": "#18181A"
     },
     {
       "name": "nga_background_secondary",
-      "value": "#FFF8E7"
+      "value": "#18181A"
     },
     {
       "name": "news_title_fontColor",

@@ -29,8 +29,6 @@ struct WebView {
 
   aboutToAppear() {
     this.srcUrl = this.pageStack.getParamByName("WebView")[0] as string;
-    // 配置Web开启调试模式
-    // webview.WebviewController.setWebDebuggingAccess(true);
   }
 
   build() {
@@ -38,6 +36,8 @@ struct WebView {
       Column() {
         Web({ src: this.srcUrl, controller: this.controller })
           .minFontSize(15)
+          .darkMode(WebDarkMode.Auto)
+          .forceDarkAccess(true)
           .onControllerAttached(() => {
             PreferencesUtil.getPreferenceValue(CommonConstants.COOKIE_TITLE, CommonConstants.G_EMPTY)
               .then((value: preferences.ValueType) => {

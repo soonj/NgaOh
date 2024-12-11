@@ -7,9 +7,9 @@ export struct TopicTitleItem {
   build() {
     Column({ space: 10 }) {
       Text(this.entity.title)
-        .fontSize(16)
-        .fontColor($r('app.color.news_title_fontColor'))
-        .maxLines(3)
+        .fontSize("17vp")
+        .fontColor($r('sys.color.ohos_id_color_text_primary'))
+        .maxLines(2)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
         .margin({top:5})
         .fontWeight(400)
@@ -19,9 +19,10 @@ export struct TopicTitleItem {
 
         Row() {
           Text(this.entity.author)
-            .fontSize(18)
-            .fontColor($r('app.color.news_time_fontColor'))
+            .fontSize("15vp")
+            .fontColor($r('sys.color.ohos_id_color_text_secondary'))
             .layoutWeight(1)
+            .lineHeight("15vp")
             .maxLines(1)
             .textOverflow({ overflow: TextOverflow.Ellipsis })
             .fontWeight(400)
@@ -33,9 +34,9 @@ export struct TopicTitleItem {
 
         Row() {
           Text(this.entity.replyCount.toString())
-            .fontSize($r('app.float.product_txt_fontSize'))
-            .lineHeight(18)
-            .fontColor($r('app.color.news_time_fontColor'))
+            .fontSize("15vp")
+            .lineHeight("15vp")
+            .fontColor($r('sys.color.ohos_id_color_text_secondary'))
             .height($r('app.string.news_content_height'))
             .textAlign(TextAlign.End)
             .width("50%")
@@ -45,10 +46,10 @@ export struct TopicTitleItem {
 
 
           Text(this.entity.lastReplyTime)
-            .fontSize($r('app.float.product_txt_fontSize'))
-            .fontColor($r('app.color.news_time_fontColor'))
-            .height($r('app.string.news_content_height'))
-            .lineHeight(18)
+            .fontSize("15vp")
+            .fontColor($r('sys.color.ohos_id_color_text_secondary'))
+            .height("15vp")
+            .lineHeight("15vp")
             .width("50%")
             .textAlign(TextAlign.End)
             .maxLines(1)

@@ -45,7 +45,8 @@ struct Home {
     Column() {
       Text(name)
         .fontWeight(this.currentTabIndex === index ? FontWeight.Normal : FontWeight.Medium)
-        .fontColor(this.currentTabIndex === index ? "#0A59F7" : "#E6000000")
+        .fontColor(this.currentTabIndex === index ? $r('sys.color.ohos_id_color_text_primary_activated')
+          : $r('sys.color.ohos_id_color_text_primary'))
         .fontSize("15fp")
         .lineHeight("22vp")
         .margin({
@@ -57,7 +58,7 @@ struct Home {
       Divider()
         .opacity(this.currentTabIndex === index ? 1 : 0)
         .width("48vp")
-        .color("#0A59F7")
+        .color($r('sys.color.ohos_id_color_emphasize'))
         .strokeWidth(2)
     }
   }
@@ -76,6 +77,7 @@ struct Home {
               .width("100vp")
               .fontSize("16vp")
               .lineHeight("16vp")
+              .fontColor($r('sys.color.ohos_id_color_text_primary'))
               .maxLines(2)
               .maxFontSize("16vp")
               .minFontSize("13vp")
@@ -121,7 +123,7 @@ struct Home {
             }.tabBar(this.tabBuilder(item.id, item.name))
           }, (item: Board, index: number) => JSON.stringify(item) + index)
         }
-        .barBackgroundColor("#fff0cd")
+        .barBackgroundColor($r("app.color.nga_background"))
         .barMode(BarMode.Scrollable)
         .barWidth("100%")
         .barHeight("52vp")
@@ -137,7 +139,7 @@ struct Home {
       .height('100%')
       .width('100%')
     }.title("National Guy Alliances")
-    .backgroundColor("#fff0cd")
+    .backgroundColor($r("app.color.nga_background"))
     .mode(NavigationMode.Stack)
     .navDestination(this.PagesMap)
   }

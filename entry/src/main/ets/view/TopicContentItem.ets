@@ -12,6 +12,7 @@ export struct contentItem {
     this.richTextModel.richTextOption = {
       content: this.entity.content,
       imageProp:{objectFit: 'Auto'},
+      baseFontColor: $r("sys.color.ohos_id_color_text_primary")
     }
     this.richTextModel.needScroll = false;
     this.richTextModel.onLinkPress = (e) => {
@@ -20,7 +21,6 @@ export struct contentItem {
       } else {
         this.pageStack.pushPathByName("WebView", e.link)
       }
-
       return e;
     }
   }
@@ -41,9 +41,9 @@ export struct contentItem {
         Column() {
           Row() {
             Text(this.entity.author?.userName)
-              .fontSize(15)
-              .fontColor($r('app.color.news_title_fontColor'))
-              .lineHeight("20vp")
+              .fontSize("14vp")
+              .fontColor($r('sys.color.ohos_id_color_text_tertiary'))
+              .lineHeight("14vp")
               .maxLines(1)
               .maxFontSize(15)
               .minFontSize(10)
@@ -51,9 +51,9 @@ export struct contentItem {
               .fontWeight(300)
 
             Text(this.entity.postDate)
-              .fontSize(13)
-              .fontColor($r('app.color.news_time_fontColor'))
-              .lineHeight("20vp")
+              .fontSize("14vp")
+              .fontColor($r('sys.color.ohos_id_color_text_tertiary'))
+              .lineHeight("14vp")
               .textAlign(TextAlign.End)
               .maxLines(1)
           }
@@ -63,17 +63,17 @@ export struct contentItem {
 
           Row() {
             Text(`级别: ${this.entity.author.level} 威望: ${this.entity.author.reputation} 发帖: ${this.entity.author.postCount} `)
-              .fontSize(14)
-              .maxFontSize(14)
+              .fontSize("13vp")
+              .maxFontSize(13)
               .minFontSize(10)
-              .fontColor($r('app.color.news_time_fontColor'))
+              .fontColor($r('sys.color.ohos_id_color_text_tertiary'))
               .textAlign(TextAlign.Start)
               .lineHeight("20vp")
               .maxLines(1)
 
             Text(`[${this.entity.floor}]`)
               .fontSize($r('app.float.product_txt_fontSize'))
-              .fontColor($r('app.color.news_time_fontColor'))
+              .fontColor($r('sys.color.ohos_id_color_text_tertiary'))
               .textAlign(TextAlign.End)
               .maxLines(1)
           }
@@ -91,7 +91,7 @@ export struct contentItem {
 
       HPRichTextV2({richTextModel: this.richTextModel})
         .padding({top:"15vp", bottom:"15vp"})
-      Divider().color($r('app.color.link_blue'))
+      Divider().color($r('sys.color.ohos_id_color_palette11'))
     }
     .padding({
       left: $r('app.string.news_row_padding'),

@@ -36,7 +36,7 @@ function httpRequest(url: string, method: http.RequestMethod, params?: string | 
       // 获取返回数据
       try {
         let decoder = util.TextDecoder.create("gbk", { ignoreBOM: true });
-        let decodedStr = decoder.decodeWithStream(new Uint8Array(value.result as ArrayBuffer));
+        let decodedStr = decoder.decodeToString(new Uint8Array(value.result as ArrayBuffer));
         let resultJson: ResponseResult = JSON.parse(decodedStr.replaceAll(/\t/g, " ").replaceAll(/\u0000/g, " ")) as ResponseResult;
 
         if (resultJson.error && resultJson.error.size > 0) {

@@ -46,5 +46,5 @@ export function string2Uint8Array(value: string): Uint8Array| null {
 
 export function uint8Array2String(input: Uint8Array) {
   let textDecoder = util.TextDecoder.create("utf-8", { ignoreBOM: true })
-  return textDecoder.decodeWithStream(input, { stream: false });
+  return textDecoder.decodeToString(input, { stream: false });
 }

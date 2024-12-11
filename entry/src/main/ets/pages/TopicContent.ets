@@ -82,7 +82,7 @@ struct TopicContent {
       }
       .height('100%')
     }
-    .backgroundColor("#FFF0CD")
+    .backgroundColor($r("app.color.nga_background"))
     .menus(this.menus())
     .title(this.topicTitle)
   }

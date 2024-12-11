@@ -54,7 +54,7 @@ struct TopicPost {
       }
       .height('100%')
     }
-    .backgroundColor("#fff0cd")
+    .backgroundColor($r("app.color.nga_background"))
     .title(this.topicPostParam.action)
     .menus([this.postMenu()])
   }

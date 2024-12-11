@@ -24,7 +24,7 @@ export function initTabData(): Board[] {
   let rawStr = '';
   let rawFile = context.resourceManager.getRawFileContentSync("category.json")
   let textDecoder = util.TextDecoder.create("utf-8", { ignoreBOM: true })
-  rawStr = textDecoder.decodeWithStream(rawFile, { stream: false })
+  rawStr = textDecoder.decodeToString(rawFile, { stream: false })
   let BoardList: Array<Board> = jsonToArray(Board, rawStr)
   for (let index = 0; index < BoardList.length; index++) {
     let element = BoardList[index];
