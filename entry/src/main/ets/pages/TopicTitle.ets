@@ -9,6 +9,7 @@ import { LoadingComponent } from '../view/LoadingComponent';
 import { curves, promptAction } from '@kit.ArkUI';
 import { TopicPostParam } from '../model/TopicPost';
 import { CommonConstants, HttpCode } from '../common/constants/CommonConstant';
+import ResponseResult from '../model/Response';
 
 
 @Builder
@@ -121,19 +122,21 @@ struct TopicTitle {
             this.newsData.pushData(topicEntity);
           }
         })
-        .catch((code: number) => {
-          if (code === HttpCode.TIMEOUT) {
+        .catch((data: ResponseResult) => {
+          if (data.code === HttpCode.TIMEOUT) {
             promptAction.showToast({
               message: '网络超时请重试',
               duration: 2000
             });
-          } else {
-            let url = "";
-            if (code === HttpCode.NOT_LOGIN) {
-              url = CommonConstants.LOGIN_WEB_PAGE_URL
-            }
+          } else if (data.code === HttpCode.NOT_LOGIN) {
+            let url = CommonConstants.LOGIN_WEB_PAGE_URL
             this.pageStack.removeByName("TopicTitle")
             this.pageStack.pushPathByName("WebView", url)
+          } else {
+            promptAction.showToast({
+              message: data.msg.toString(),
+              duration: 2000
+            });
           }
         })
         .finally(() => {

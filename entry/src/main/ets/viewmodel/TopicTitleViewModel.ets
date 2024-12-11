@@ -38,7 +38,7 @@ export class TopicTitleViewModel {
       let url: string = this._buildUrl(board ,page);
       httpRequestGet(url, this._buildParam(board, page), await this._buildHeader()).then((data) => {
         if (data.code !== HttpCode.SUCCESS) {
-          reject(data.code);
+          reject(data);
         } else {
           resolve(data.result);
         }

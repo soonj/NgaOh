@@ -137,7 +137,7 @@ export class TopicContentViewModel {
     return `https://bbs.nga.cn/read.php?__output=8&tid=${tid}&page=${page}`;
   }
 
-  _buildWebViewUrl(tid: number, page: number = 1): string {
+  buildWebViewUrl(tid: number, page: number = 1): string {
     return `https://bbs.nga.cn/read.php?tid=${tid}&page=${page}`;
   }
 

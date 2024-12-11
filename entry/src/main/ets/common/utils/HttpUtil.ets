@@ -42,6 +42,9 @@ function httpRequest(url: string, method: http.RequestMethod, params?: string | 
         if (resultJson.error && resultJson.error.size > 0) {
           serverData.code = resultJson.error[0];
           serverData.msg = resultJson.error[0];
+        } else if (resultJson.code > 0) {
+          serverData.code = resultJson.code;
+          serverData.msg = resultJson.msg;
         } else {
           serverData.code = HttpCode.SUCCESS;
           if (resultJson.result) {

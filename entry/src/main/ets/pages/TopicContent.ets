@@ -15,6 +15,7 @@ import { TopicTitleInfo } from '../model/TopicTitleInfo';
 import { curves, promptAction } from '@kit.ArkUI';
 import { TopicPostParam } from '../model/TopicPost';
 import { CommonConstants, HttpCode } from '../common/constants/CommonConstant';
+import { TextShare } from '../common/utils/TextShare';
 
 @Builder
 export function TopicContentBuilder() {
@@ -136,7 +137,7 @@ struct TopicContent {
           if (code === HttpCode.NOT_LOGIN) {
             url = CommonConstants.LOGIN_WEB_PAGE_URL
           } else if (code === HttpCode.PARSE_ERROR) {
-            url = this.contentModel._buildWebViewUrl(this.tid, this.currentPage)
+            url = this.contentModel.buildWebViewUrl(this.tid, this.currentPage)
           }
           this.pageStack.removeByName("TopicContent")
           this.pageStack.pushPathByName("WebView", url)
@@ -159,6 +160,14 @@ struct TopicContent {
           topicPostParam.tid = this.tid;
           topicPostParam.action = TopicPostParam.TOPIC_POST_ACTION_REPLY;
           this.pageStack.pushPathByName("TopicPost", topicPostParam)
+        }
+      },
+      {
+        'value': "分享",
+        'icon': 'resources/base/media/ic_public_sys_share.svg',
+        'action': () => {
+          let textShare = new TextShare(this.contentModel.buildWebViewUrl(this.tid), this.topicTitle);
+          textShare.share();
         }
       },
       {

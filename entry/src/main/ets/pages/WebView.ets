@@ -7,6 +7,7 @@ import { router } from '@kit.ArkUI';
 import { BusinessError } from '@kit.BasicServicesKit';
 import PreferencesUtil from '../common/utils/PreferencesUtil';
 import { preferences } from '@kit.ArkData';
+import { TextShare } from '../common/utils/TextShare';
 
 
 @Builder
@@ -118,6 +119,7 @@ struct WebView {
       .height(CommonConstants.FULL_HEIGHT)
 
     }
+    .menus(this.menus())
     .title("WebView")
   }
 
@@ -129,5 +131,18 @@ struct WebView {
     } else {
       this.pageStack.pop();
     }
+  }
+
+  menus(): NavigationMenuItem[] {
+    return [
+      {
+        'value': "分享",
+        'icon': 'resources/base/media/ic_public_sys_share.svg',
+        'action': () => {
+          let textShare = new TextShare(this.srcUrl);
+          textShare.share();
+        }
+      },
+    ]
   }
 }
