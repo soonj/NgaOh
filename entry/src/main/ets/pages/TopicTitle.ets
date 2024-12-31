@@ -128,7 +128,7 @@ struct TopicTitle {
               message: '网络超时请重试',
               duration: 2000
             });
-          } else if (data.code === HttpCode.NOT_LOGIN) {
+          } else if (data.code === HttpCode.NOT_LOGIN || data.code == HttpCode.NOT_LOGIN_MAIN) {
             let url = CommonConstants.LOGIN_WEB_PAGE_URL
             this.pageStack.removeByName("TopicTitle")
             this.pageStack.pushPathByName("WebView", url)

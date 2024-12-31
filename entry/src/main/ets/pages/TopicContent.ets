@@ -139,6 +139,10 @@ struct TopicContent {
           } else if (code === HttpCode.PARSE_ERROR) {
             url = this.contentModel.buildWebViewUrl(this.tid, this.currentPage)
           }
+          promptAction.showToast({
+            message: '被封禁,正在跳转浏览器...',
+            duration: 2000
+          });
           this.pageStack.removeByName("TopicContent")
           this.pageStack.pushPathByName("WebView", url)
         }

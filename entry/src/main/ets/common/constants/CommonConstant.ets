@@ -177,6 +177,7 @@ export enum CookieOperation {
 }
 
 export enum HttpCode {
+  NOT_LOGIN_MAIN = 1,
   NOT_LOGIN = 15,
   SUCCESS = 200,
   TIMEOUT = 400,
