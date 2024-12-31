@@ -308,6 +308,8 @@ export class TopicRowEntity {
   page: number = 0;
   commentList: CommentEntity[] = [];
   attachList: AttachmentEntity[] = [];
+  topicOwner: string = "";
+  quote: string = "";
 }
 
 export class CommentEntity {
