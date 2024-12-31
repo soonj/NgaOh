@@ -30,23 +30,24 @@ class BasicHtmlDecoder implements HtmlDecoder {
     "[align=center]": "<div style='text-align:right' >",
     "[/align]": "</div>",
     // "[quote]": "<p style='margin: 10px;border: 5px solid #000;'>",
-    "[quote]": "<div style='background: #f2eddf ;margin: 0.8em;padding: 0.6em 0.8em'>",
+    "[quote]": "<div>",
     "[/quote]": "</div>",
     // "[/quote]": "</p>",
     "&amp;": "&",
-    "[/td]": "</td>"
+    "[/td]": "</td>",
+    "<br/>": "<br>"
   };
 
   decode(data: string): string {
     let ngaHost = "http://bbs.nga.cn";
 
     data = data.replace(/\[b]Reply to \[pid=(.+?),(.+?),(.+?)]Reply\[\/pid](.+?)\[\/b]/g,
-      (match, p1: string, p2: string, p3: string, p4: string) => `[quote]回复${p4}</br>[/quote]</br>`);
+      (match, p1: string, p2: string, p3: string, p4: string) => `[quote]回复${p4}[/quote]`);
 
     data = data.replace(/\[pid=(.+?),(.+?),(.+?)]Reply\[\/pid]/g, "回复");
 
     data = data.replace(/Post by \[uid=(.*?)](.*?)\[\/uid]/g, (match, uid: string,
-      username: string) => `<a href='${ngaHost}/nuke.php?func=ucp&uid=${uid}' style='font-weight: bold;'>${username}</a>`);
+      username: string) => `<a href='${ngaHost}/nuke.php?func=ucp&uid=${uid}'>${username}</a>`);
 
     data = data.replace(/\[tid=\d+]Topic\[\/tid]/g, "回复");
 
@@ -139,6 +140,30 @@ export class HtmlDecoderManager implements HtmlDecoder {
     });
     return data;
   }
+
+  decodeWithQuote(data: string): string[] {
+    data = new BasicHtmlDecoder().decode(data);
+    const result: string[] = [];
+    HtmlDecoderManager.htmlDecoders.forEach(decoder => {
+      data = decoder.decode(data);
+    });
+    const endTagMatches = data.matchAll(/<\/div>/g);
+    let lastEndTagIndex = -1;
+    for (const match of endTagMatches) {
+      if (match.index) {
+        lastEndTagIndex = match.index + match[0].length;
+      }
+    }
+    if (lastEndTagIndex !== -1) {
+      let beforData = data.slice(0, lastEndTagIndex);
+      let afterData = data.slice(lastEndTagIndex).trim();
+      result.push(afterData);
+      result.push("<p>" + beforData + "</p>");
+    } else {
+      result.push(data);
+    }
+    return result;
+  };
 }
 
 // Helper function to simulate sprintf in TypeScript

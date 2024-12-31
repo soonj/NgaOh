@@ -5,6 +5,10 @@
       "value": "#FFF0CD"
     },
     {
+      "name": "quote_background",
+      "value": "#f2eddf"
+    },
+    {
       "name": "nga_background_secondary",
       "value": "#FFF8E7"
     },

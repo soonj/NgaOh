@@ -45,7 +45,11 @@ export class TopicContentViewModel {
       let v = Object(result.data.__R)[key] as TopicContentBeanDataRR;
       let rowEntity: TopicRowEntity = new TopicRowEntity;
       let louIndex: number = v.lou;
-      rowEntity.content = htmlDecoder.decode(v.content);
+      let contentArray: string[] = htmlDecoder.decodeWithQuote(v.content);
+      if (contentArray.length > 1) {
+        rowEntity.quote = contentArray[1];
+      }
+      rowEntity.content = contentArray[0];
       rowEntity.subject = v.subject;
       rowEntity.postDate = v.postdate;
       rowEntity.floor = `${louIndex}楼`;
@@ -53,6 +57,9 @@ export class TopicContentViewModel {
       rowEntity.page = page;
       let uid: string = v.authorid.toString();
       rowEntity.author = entity.authorMap[uid];
+      if (v != null && louIndex == 0) {
+        rowEntity.topicOwner = rowEntity.author.userName;
+      }
       rowEntity.isHidden = rowEntity.content == "" && v.alterinfo == "";
       this._convertDeviceType(v, rowEntity);
       this._convertComment(v, entity, rowEntity);
