@@ -1,6 +1,6 @@
 import { CommonConstants, HttpCode } from '../common/constants/CommonConstant';
 import { HtmlDecoderManager } from '../common/utils/HtmlUtil';
-import { httpRequestGet } from '../common/utils/HttpUtil';
+import { httpRequestGet, httpRequestPost } from '../common/utils/HttpUtil';
 import PreferencesUtil from '../common/utils/PreferencesUtil';
 import {
   AttachmentEntity,
@@ -12,18 +12,22 @@ import {
   TopicContentResult,
   TopicRowEntity
 } from '../model/TopicContent';
+import { JSON } from '@kit.ArkTS';
+import json from '@ohos.util.json';
+import { ArticleListParam } from '../param/ArticleListParam';
 
 export class TopicContentViewModel {
 
-  loadContent(tid: number, page: number): Promise<TopicContentEntity> {
+  // loadContent(tid: number, page: number): Promise<TopicContentEntity> {
+  loadContent(articleListParam: ArticleListParam): Promise<TopicContentEntity> {
     return new Promise(async (resolve: Function, reject: Function) => {
-      let url: string = this._buildUrl(tid, page);
+      let url: string = this._buildUrl(articleListParam);
       httpRequestGet(url, this._buildParam(), await this._buildHeader()).then((data) => {
         if (data.code !== HttpCode.SUCCESS) {
           reject(data.code);
         } else {
           try {
-            let entity = this._parseResult(data.result, page);
+            let entity = this._parseResult(data.result, articleListParam);
             resolve(entity);
           } catch (error) {
             reject(HttpCode.PARSE_ERROR);
@@ -35,12 +39,32 @@ export class TopicContentViewModel {
     });
   }
 
-  private _parseResult(resultObject: string | Object | ArrayBuffer, page: number): TopicContentEntity {
+  like(tid: number, pid: number, like: number): Promise<string> {
+    return new Promise(async (resolve: Function, reject: Function) => {
+      let url: string = this._likeUrl(tid, pid, like);
+      httpRequestPost(url, this._buildParam(), await this._buildHeader()).then((data) => {
+        if (data.code !== HttpCode.SUCCESS) {
+          reject(data.code);
+        } else {
+          try {
+            resolve("发送成功");
+          } catch (error) {
+            reject(HttpCode.PARSE_ERROR);
+          }
+        }
+      }).catch((code: number) => {
+        reject(code);
+      });
+    });
+  }
+
+  private _parseResult(resultObject: string | Object | ArrayBuffer, articleListParam: ArticleListParam): TopicContentEntity {
     let result: TopicContentResult = resultObject as TopicContentResult;
     let entity: TopicContentEntity = new TopicContentEntity;
     let htmlDecoder = new HtmlDecoderManager();
     this._convertDataMap(result);
     this._convertAuthorMap(result, entity);
+    let topicOwner = "";
     Object.keys(result.data.__R).forEach((key) => {
       let v = Object(result.data.__R)[key] as TopicContentBeanDataRR;
       let rowEntity: TopicRowEntity = new TopicRowEntity;
@@ -53,12 +77,16 @@ export class TopicContentViewModel {
       rowEntity.subject = v.subject;
       rowEntity.postDate = v.postdate;
       rowEntity.floor = `${louIndex}楼`;
-      rowEntity.pid = v.pid.toString();
-      rowEntity.page = page;
-      let uid: string = v.authorid.toString();
-      rowEntity.author = entity.authorMap[uid];
+      rowEntity.pid = v.pid;
+      rowEntity.tid = v.tid;
+      rowEntity.page = articleListParam.page;
+      rowEntity.score = v.score;
+      rowEntity.author = entity.authorMap[v.authorid];
       if (v != null && louIndex == 0) {
         rowEntity.topicOwner = rowEntity.author.userName;
+        topicOwner = rowEntity.author.userName;
+      } else if (topicOwner != "") {
+        rowEntity.topicOwner = topicOwner;
       }
       rowEntity.isHidden = rowEntity.content == "" && v.alterinfo == "";
       this._convertDeviceType(v, rowEntity);
@@ -83,18 +111,21 @@ export class TopicContentViewModel {
   }
 
   private _convertAuthorMap(dataBean: TopicContentResult, entity: TopicContentEntity): void {
-    let authorMap: Map<string, TopicAuthorEntity> = new Map;
+    let authorMap: Map<number, TopicAuthorEntity> = new Map;
     Object.keys(dataBean.data.__U.dataMap).forEach((key) => {
       let uidBeanData: TopicContentBeanDataUid = Object(dataBean.data.__U.dataMap)[key] as TopicContentBeanDataUid;
-      let uid = key
-      let authorEntity = new TopicAuthorEntity(uidBeanData.username, uid, uidBeanData.avatar);
+      let uidInt = parseInt(key);
+      if (isNaN(uidInt)) {
+        uidInt = 0;
+      }
+      let authorEntity = new TopicAuthorEntity(uidBeanData.username, uidInt, uidBeanData.avatar);
       authorEntity.postCount = uidBeanData.postnum;
       if (uidBeanData.rvrc != null) {
         authorEntity.reputation = uidBeanData.rvrc / 10.0;
       }
       const memberId = uidBeanData.memberid;
       authorEntity.level = dataBean.data.__U.__GROUPS[memberId]["0"];
-      authorMap[uid] = authorEntity;
+      authorMap[uidInt] = authorEntity;
     });
     entity.authorMap = authorMap;
   }
@@ -122,7 +153,7 @@ export class TopicContentViewModel {
       const commentEntity = new CommentEntity();
       commentEntity.content = bean.content;
       commentEntity.postDate = bean.postdate;
-      commentEntity.authorEntity = contentEntity.authorMap[bean.authorid.toString()];
+      commentEntity.authorEntity = contentEntity.authorMap[bean.authorid];
       entity.commentList.push(commentEntity);
     });
   }
@@ -140,11 +171,31 @@ export class TopicContentViewModel {
   }
 
 
-  private _buildUrl(tid: number, page: number = 1): string {
-    return `https://bbs.nga.cn/read.php?__output=8&tid=${tid}&page=${page}`;
+  private _buildUrl(articleListParam: ArticleListParam): string {
+    let tid: number = articleListParam.tid;
+    let pid: number = articleListParam.pid;
+    let authorId: number = articleListParam.authorId;
+    let page: number = articleListParam.page
+    let url = `https://bbs.nga.cn/read.php?__output=8&noprefix&v2&page=${page}`;
+    if (tid != 0) {
+      url = url + `&tid=${tid}`;
+    }
+    if (pid != 0) {
+      url = url + `&pid=${pid}`;
+    }
+    if (authorId != 0) {
+      url = url + `&authorid=${authorId}`;
+    }
+    return url;
   }
 
-  buildWebViewUrl(tid: number, page: number = 1): string {
+  private _likeUrl(tid: number, pid: number = 1, like: number = 1): string {
+    return `https://bbs.nga.cn/nuke.php?__lib=topic_recommend&__act=add&raw=3&__output=8&tid=${tid}&pid=${pid}&value=${like}`;
+  }
+
+  buildWebViewUrl(articleListParam: ArticleListParam): string {
+    let tid: number = articleListParam.tid;
+    let page: number = articleListParam.page
     return `https://bbs.nga.cn/read.php?tid=${tid}&page=${page}`;
   }
 

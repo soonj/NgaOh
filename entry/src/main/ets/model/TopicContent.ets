@@ -289,7 +289,7 @@ export class TopicContentBeanDataComment {
 
 export class TopicContentEntity {
   contentList: TopicRowEntity[] = [];
-  authorMap: Map<string, TopicAuthorEntity> = new Map;
+  authorMap: Map<number, TopicAuthorEntity> = new Map;
   htmlContent: string = "";
   topicTitle: string = "";
   totalPage: number = 0;
@@ -298,25 +298,27 @@ export class TopicContentEntity {
 export class TopicRowEntity {
 
   content: string = "";
-  author: TopicAuthorEntity = new TopicAuthorEntity("", "", "");
+  author: TopicAuthorEntity = new TopicAuthorEntity("", 0, "");
   floor: string = "";
   deviceType: Array<number | string> = new Array;
   postDate: string = "";
   subject: string = "";
   isHidden: boolean = false;
-  pid: string = "";
+  tid: number = 0;
+  pid: number = 0;
   page: number = 0;
   commentList: CommentEntity[] = [];
   attachList: AttachmentEntity[] = [];
   topicOwner: string = "";
   quote: string = "";
+  score: number = 0;
 }
 
 export class CommentEntity {
 
   content: string = "";
   postDate: string = "";
-  authorEntity: TopicAuthorEntity = new TopicAuthorEntity("", "", "");
+  authorEntity: TopicAuthorEntity = new TopicAuthorEntity("", 0, "");
 }
 
 export class AttachmentEntity {
@@ -325,7 +327,7 @@ export class AttachmentEntity {
 }
 
 export class TopicAuthorEntity {
-  constructor(userName: string, uid: string, avatarUrl: string) {
+  constructor(userName: string, uid: number, avatarUrl: string) {
     if (userName.startsWith("#anony_")) {
       this.isAnonymous = true;
       this.userName = convertAnonymousName(userName);
@@ -333,12 +335,13 @@ export class TopicAuthorEntity {
       this.isAnonymous = false;
       this.userName = userName;
     }
+    this.uid = uid;
     this.avatarUrl = avatarUrl;
   }
 
   userName = "";
   isAnonymous = false;
-  uid = "";
+  uid = 0;
   avatarUrl = "";
   level = "";
   postCount = 0;

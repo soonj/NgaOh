@@ -7,9 +7,10 @@ import { TopicListBeanResult } from '../model/TopicTitle';
 import { TopicTitleItem } from '../view/TopicTitleItem';
 import { LoadingComponent } from '../view/LoadingComponent';
 import { curves, promptAction } from '@kit.ArkUI';
-import { TopicPostParam } from '../model/TopicPost';
+import { TopicPostParam } from '../param/TopicPostParam';
 import { CommonConstants, HttpCode } from '../common/constants/CommonConstant';
 import ResponseResult from '../model/Response';
+import { ArticleListParam } from '../param/ArticleListParam';
 
 
 @Builder
@@ -88,7 +89,10 @@ struct TopicTitle {
           ListItem() {
             TopicTitleItem({ entity: item })
               .onClick(() => {
-                this.pageStack.pushPathByName("TopicContent", item)
+                let articleListParam : ArticleListParam = new ArticleListParam;
+                articleListParam.tid = item.tid;
+                articleListParam.title = item.title;
+                this.pageStack.pushPathByName("TopicContent", articleListParam)
               })
               .backgroundColor(index % 2 == 0 ? $r('app.color.nga_background_secondary')
                 : $r('app.color.nga_background'))

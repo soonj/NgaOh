@@ -4,6 +4,7 @@ import ResponseResult from '../../model/Response';
 import { util } from '@kit.ArkTS';
 import { string2Uint8Array } from './StringUtil';
 import { HttpCode } from '../constants/CommonConstant';
+import json from '@ohos.util.json';
 
 // GET请求
 export function httpRequestGet(url: string, params?: string | Object | ArrayBuffer,

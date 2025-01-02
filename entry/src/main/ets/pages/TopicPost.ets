@@ -1,4 +1,4 @@
-import { TopicPostParam } from '../model/TopicPost';
+import { TopicPostParam } from '../param/TopicPostParam';
 import { LoadingComponent } from '../view/LoadingComponent';
 import { promptAction } from '@kit.ArkUI';
 import { TopicPostViewModel } from '../viewmodel/TopicPostViewModel';

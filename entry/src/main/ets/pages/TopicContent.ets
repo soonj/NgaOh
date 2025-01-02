@@ -1,21 +1,18 @@
 import { PullToRefresh, PullToRefreshConfigurator, PullToRefreshV2 } from '@ohos/pulltorefresh'
-import { NewsDataSource } from '../viewmodel/TitleDataSource';
 import { TopicContentViewModel } from '../viewmodel/TopicContentViewModel';
 import {
-  TopicContentBeanDataRR,
   TopicContentEntity,
-  TopicContentResult,
   TopicRowEntity as ViewData
 } from '../model/TopicContent';
 import { JSON } from '@kit.ArkTS';
 import { ContentSource } from '../viewmodel/ContentDataSource';
 import { contentItem } from '../view/TopicContentItem';
 import { LoadingComponent } from '../view/LoadingComponent';
-import { TopicTitleInfo } from '../model/TopicTitleInfo';
 import { curves, promptAction } from '@kit.ArkUI';
-import { TopicPostParam } from '../model/TopicPost';
+import { TopicPostParam } from '../param/TopicPostParam';
 import { CommonConstants, HttpCode } from '../common/constants/CommonConstant';
 import { TextShare } from '../common/utils/TextShare';
+import { ArticleListParam } from '../param/ArticleListParam';
 
 @Builder
 export function TopicContentBuilder() {
@@ -26,14 +23,11 @@ export function TopicContentBuilder() {
 @Preview
 @ComponentV2
 struct TopicContent {
-  @Local tid: number = 0;
+  @Local articleListParam: ArticleListParam = new ArticleListParam();
   contentModel: TopicContentViewModel = new TopicContentViewModel();
   @Local contentData: ContentSource = new ContentSource();
   private scroller: Scroller = new Scroller();
-  @Local currentPage: number = 1;
   @Local firstIndex: number = 0;
-  @Local totalPage: number = 1;
-  @Local topicTitle: string = "";
   readonly ANIMATION_DURATION: number = 500;
   readonly SWITCH_BUTTON: number = 3;
   @Consumer('pageStack') pageStack: NavPathStack = new NavPathStack();
@@ -41,9 +35,10 @@ struct TopicContent {
   @Local isLoading: boolean = true;
 
   aboutToAppear() {
-    let topicTitleInfo = this.pageStack.getParamByName("TopicContent")[0] as TopicTitleInfo;
-    this.tid = topicTitleInfo.tid;
-    this.topicTitle = topicTitleInfo.title;
+    let stackArray: Array<ArticleListParam> = this.pageStack.getParamByName("TopicContent") as Array<ArticleListParam>;
+    if (stackArray.length > 0) {
+      this.articleListParam = stackArray[stackArray.length - 1]
+    }
     this.getContents();
   }
 
@@ -62,7 +57,7 @@ struct TopicContent {
             onRefresh: () => {
               return new Promise<string>((resolve, reject) => {
                 this.contentData.clear();
-                this.currentPage = 1;
+                this.articleListParam.page = 1;
                 this.getContents().then(() =>{
                   resolve("刷新成功");
                 });
@@ -70,7 +65,7 @@ struct TopicContent {
             },
             onLoadMore: () => {
               return new Promise<string>((resolve, reject) => {
-                this.currentPage++;
+                this.articleListParam.page ++ ;
                 this.getContents().then(() =>{
                   resolve("加载成功");
                 });
@@ -85,7 +80,7 @@ struct TopicContent {
     }
     .backgroundColor($r("app.color.nga_background"))
     .menus(this.menus())
-    .title(this.topicTitle)
+    .title(this.articleListParam.title)
   }
 
   @Builder
@@ -116,15 +111,14 @@ struct TopicContent {
   }
 
   getContents(): Promise<boolean> {
-    return new Promise((resolve: Function) => {this.contentModel.loadContent(this.tid, this.currentPage)
+    return new Promise((resolve: Function) => {this.contentModel.loadContent(this.articleListParam)
       .then((topicContentResult: TopicContentEntity) => {
-        if (this.currentPage >= topicContentResult.totalPage) {
+        if (this.articleListParam.page >= topicContentResult.totalPage) {
           this.refreshConfigurator.setHasLoadMore(false);
         } else {
           this.refreshConfigurator.setHasLoadMore(true);
         }
         this.contentData.pushDataList(...topicContentResult.contentList)
-        this.totalPage = topicContentResult.totalPage;
       })
       .catch((code: number) => {
         if (code === HttpCode.TIMEOUT) {
@@ -137,7 +131,7 @@ struct TopicContent {
           if (code === HttpCode.NOT_LOGIN) {
             url = CommonConstants.LOGIN_WEB_PAGE_URL
           } else if (code === HttpCode.PARSE_ERROR) {
-            url = this.contentModel.buildWebViewUrl(this.tid, this.currentPage)
+            url = this.contentModel.buildWebViewUrl(this.articleListParam)
           }
           promptAction.showToast({
             message: '被封禁,正在跳转浏览器...',
@@ -161,7 +155,7 @@ struct TopicContent {
         'icon': 'resources/base/media/ic_public_list_add_transparent.svg',
         'action': () => {
           let topicPostParam = new TopicPostParam;
-          topicPostParam.tid = this.tid;
+          topicPostParam.tid = this.articleListParam.tid;
           topicPostParam.action = TopicPostParam.TOPIC_POST_ACTION_REPLY;
           this.pageStack.pushPathByName("TopicPost", topicPostParam)
         }
@@ -170,7 +164,7 @@ struct TopicContent {
         'value': "分享",
         'icon': 'resources/base/media/ic_public_sys_share.svg',
         'action': () => {
-          let textShare = new TextShare(this.contentModel.buildWebViewUrl(this.tid), this.topicTitle);
+          let textShare = new TextShare(this.contentModel.buildWebViewUrl(this.articleListParam), this.articleListParam.title);
           textShare.share();
         }
       },
@@ -180,7 +174,7 @@ struct TopicContent {
         'action': () => {
           this.isLoading = true;
           this.contentData.clear();
-          this.currentPage = 1;
+          this.articleListParam.page = 1;
           this.getContents();
         }
       }

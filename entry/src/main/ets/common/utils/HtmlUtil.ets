@@ -160,7 +160,7 @@ export class HtmlDecoderManager implements HtmlDecoder {
       result.push(afterData);
       result.push("<p>" + beforData + "</p>");
     } else {
-      result.push(data);
+      result.push("<p>" + data + "</p>");
     }
     return result;
   };

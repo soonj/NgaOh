@@ -1,7 +1,7 @@
 import { CommonConstants, HttpCode } from '../common/constants/CommonConstant';
 import { httpRequestGet, httpRequestPost } from '../common/utils/HttpUtil';
 import PreferencesUtil from '../common/utils/PreferencesUtil';
-import { TopicPostParam } from '../model/TopicPost';
+import { TopicPostParam } from '../param/TopicPostParam';
 import { preferences } from '@kit.ArkData';
 
 export class TopicPostViewModel {

@@ -1,5 +1,9 @@
 import { HPRichTextV2, ObservedHPRichText, RichTextOption, RichTextOptionModelV2 } from '@ohasasugar/hp-richtext';
+import { CommonConstants } from '../common/constants/CommonConstant';
 import { TopicRowEntity } from '../model/TopicContent';
+import { TopicContentViewModel } from '../viewmodel/TopicContentViewModel';
+import { promptAction } from '@kit.ArkUI';
+import { ArticleListParam } from '../param/ArticleListParam';
 
 
 @ComponentV2
@@ -8,6 +12,7 @@ export struct contentItem {
   @Consumer('pageStack') pageStack: NavPathStack = new NavPathStack();
   richTextModel: RichTextOptionModelV2 = new RichTextOptionModelV2();
   richTextModelQuote: RichTextOptionModelV2 = new RichTextOptionModelV2();
+  topicContentModel: TopicContentViewModel = new TopicContentViewModel();
 
   aboutToAppear(): void {
     this.richTextModel.richTextOption = {
@@ -53,12 +58,12 @@ export struct contentItem {
           .alt($r('app.media.ic_public_person'))
           .height("50vp")
           .width("15%")
-          .objectFit(ImageFit.Fill)
+          .objectFit(ImageFit.Cover)
           .backgroundImageSize(ImageSize.FILL)
-        // todo: 头像点击
-        // .onClick(() => {
-        //   this.pageStack.pushPathByName("WebView", e.link)
-        // })
+          .onClick(() => {
+            this.pageStack.pushPathByName("WebView",
+              CommonConstants.HOST + "nuke.php?func=ucp&uid=" + this.entity.author.uid.toString())
+          })
         Column() {
           Row() {
             Text(this.entity.author?.userName + (this.entity.author.isAnonymous ? "(匿名)" : "") +
@@ -110,10 +115,11 @@ export struct contentItem {
       }
       .width("100%")
       .margin({ top: $r('app.string.news_content_margin'), bottom: $r('app.string.news_content_margin') })
+
       if (this.entity.quote != "") {
         HPRichTextV2({ richTextModel: this.richTextModelQuote })
-          .padding("5vp")
           .margin("5vp")
+          .padding({left: "10vp", right: "10vp"})
           .backgroundColor($r('app.color.quote_background'))
           .border({
             color: "#e6e1d3",
@@ -123,7 +129,67 @@ export struct contentItem {
       }
 
       HPRichTextV2({ richTextModel: this.richTextModel })
-        .padding({ top: "15vp", bottom: "15vp" })
+        .padding({ top: "5vp", bottom: "5vp" })
+
+      Row({ space: 20 }) {
+        Row({ space: 6 }) {
+          Image($r('app.media.ic_public_thumbsup_empty')).width("15vp").height("15vp")
+          Text(this.entity.score.toString()).fontSize("14vp")
+        }
+
+        Image($r('app.media.ic_public_dot'))
+          .width("15vp")
+          .height("15vp")
+          .bindMenu([
+            {
+              value: "支持",
+              action: () => {
+                this.topicContentModel.like(this.entity.tid, this.entity.pid, 1).then((result: string) => {
+                  promptAction.showToast({
+                    message: result,
+                    duration: 2000
+                  });
+                }).catch((result: string) => {
+                  promptAction.showToast({
+                    message: result,
+                    duration: 2000
+                  });
+                });
+              }
+            },
+            {
+              value: "反对",
+              action: () => {
+                this.topicContentModel.like(this.entity.tid, this.entity.pid, -1).then((result: string) => {
+                  promptAction.showToast({
+                    message: result,
+                    duration: 2000
+                  });
+                }).catch((result: string) => {
+                  promptAction.showToast({
+                    message: result,
+                    duration: 2000
+                  });
+                });
+              }
+            },
+            {
+              value: "只看此人",
+              action: () => {
+                let articleListParam : ArticleListParam = new ArticleListParam();
+                articleListParam.tid = this.entity.tid;
+                articleListParam.authorId = this.entity.author.uid;
+                articleListParam.title = "指定用户发帖";
+                this.pageStack.pushPathByName("TopicContent", articleListParam)
+              }
+            },
+          ])
+      }
+      .justifyContent(FlexAlign.End)
+      .width("100%")
+      .padding({right: "10vp"})
+      .margin({ right: "20vp", bottom: $r('app.string.news_content_margin') })
+
       Divider().color($r('sys.color.ohos_id_color_palette11'))
     }
     .padding({
